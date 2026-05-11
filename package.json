@@ -1,0 +1,43 @@
+{
+  "name": "homehaven",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
+  },
+  "dependencies": {
+    "cloudinary": "^2.1.0",
+    "leaflet": "^1.9.4",
+    "moment": "^2.30.1",
+    "mongodb": "^6.5.0",
+    "mongoose": "^8.2.1",
+    "next": "^14.2.35",
+    "next-auth": "^4.24.7",
+    "react": "^18",
+    "react-dom": "^18",
+    "react-icons": "^5.0.1",
+    "react-leaflet": "^4.2.1",
+    "react-share": "^5.1.0",
+    "react-spinners": "^0.13.8",
+    "react-toastify": "^10.0.5"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/jest": "^30.0.0",
+    "autoprefixer": "^10.0.1",
+    "eslint": "^8.57.0",
+    "eslint-config-next": "14.2.35",
+    "jest": "^30.3.0",
+    "jest-environment-jsdom": "^30.3.0",
+    "postcss": "^8",
+    "tailwindcss": "^3.3.0"
+  }
+}
