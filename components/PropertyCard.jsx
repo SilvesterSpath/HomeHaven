@@ -1,98 +1,81 @@
 'use client';
 import Image from 'next/image';
 import Link from 'next/link';
-import {
-  FaBed,
-  FaBath,
-  FaRulerCombined,
-  FaMoneyBill,
-  FaMapMarker,
-} from 'react-icons/fa';
+import { FaMapMarkerAlt } from 'react-icons/fa';
+import BookmarkButton from './BookmarkButton';
+
+const formatPrice = (rates) => {
+  if (rates?.monthly) return `$${Number(rates.monthly).toLocaleString()}/mo`;
+  if (rates?.weekly) return `$${Number(rates.weekly).toLocaleString()}/wk`;
+  if (rates?.nightly) return `$${Number(rates.nightly).toLocaleString()}/night`;
+  return null;
+};
+
+const formatMeta = ({ beds, baths, square_feet }) => {
+  const parts = [];
+  if (beds != null) parts.push(`${beds} ${beds === 1 ? 'bed' : 'beds'}`);
+  if (baths != null) parts.push(`${baths} ${baths === 1 ? 'bath' : 'baths'}`);
+  if (square_feet != null) {
+    parts.push(`${Number(square_feet).toLocaleString()} sqft`);
+  }
+  return parts.join(' · ');
+};
+
+const formatPeriods = (rates) => {
+  const labels = [];
+  if (rates?.nightly) labels.push('Nightly');
+  if (rates?.weekly) labels.push('Weekly');
+  if (rates?.monthly) labels.push('Monthly');
+  return labels.join(' · ');
+};
 
 const PropertyCard = ({ property }) => {
-  const getRateDisplay = (rates) => {
-    if (rates.monthly) {
-      return rates.monthly + '/mo';
-    } else if (rates.weekly) {
-      return rates.weekly + '/wk';
-    } else if (rates.nightly) {
-      return rates.nightly + '/night';
-    }
-  };
+  const price = formatPrice(property.rates);
+  const meta = formatMeta(property);
+  const periods = formatPeriods(property.rates);
+  const location = `${property.location.city}, ${property.location.state}`;
 
   return (
-    <div className='rounded-xl shadow-md relative'>
-      <Image
-        src={property.images[0]}
-        alt=''
-        height={0}
-        width={0}
-        sizes='100vw'
-        className='w-full h-auto rounded-t-xl'
-      />
-      <div className='p-4'>
-        <div className='text-left md:text-center lg:text-left mb-6'>
-          <div className='text-gray-600'>{property.type}</div>
-          <h3 className='text-xl font-bold'>{property.name}</h3>
+    <article className='group relative overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-gray-100 transition hover:shadow-md focus-within:ring-2 focus-within:ring-brand'>
+      <Link
+        href={`/properties/${property._id}`}
+        className='block focus:outline-none'
+      >
+        <div className='relative aspect-[16/10] w-full overflow-hidden bg-gray-100'>
+          <Image
+            src={property.images[0]}
+            alt={property.name}
+            fill
+            sizes='(min-width: 768px) 33vw, 100vw'
+            className='object-cover transition duration-300 group-hover:scale-105'
+          />
+          <span className='absolute bottom-3 left-3 inline-flex items-center gap-1.5 rounded-full bg-white/90 px-3 py-1 text-xs font-medium text-gray-800 shadow-sm backdrop-blur'>
+            <FaMapMarkerAlt className='text-brand-dark' aria-hidden />
+            {location}
+          </span>
         </div>
-        <h3 className='absolute top-[10px] right-[10px] bg-white px-4 py-2 rounded-lg text-brand-dark font-bold text-right md:text-center lg:text-right'>
-          ${getRateDisplay(property.rates)}
-        </h3>
-
-        <div className='flex justify-center gap-4 text-gray-500 mb-4'>
-          <p>
-            <FaBed className='inline mr-2'></FaBed> {property.beds}{' '}
-            <span className='md:hidden lg:inline'>Beds</span>
+        <div className='p-4'>
+          <p className='text-xs font-medium uppercase tracking-wide text-gray-500'>
+            {property.type}
           </p>
-          <p>
-            <FaBath className='inline mr-2'></FaBath> {property.baths}{' '}
-            <span className='md:hidden lg:inline'>Baths</span>
-          </p>
-          <p>
-            <FaRulerCombined className='inline mr-2'></FaRulerCombined>
-            {property.square_feet}{' '}
-            <span className='md:hidden lg:inline'>sqft</span>
-          </p>
-        </div>
-
-        <div className='flex justify-center gap-4 text-green-900 text-sm mb-4'>
-          {property.rates.weekly && (
-            <p>
-              <FaMoneyBill className='inline mr-2'></FaMoneyBill> Weekly
-            </p>
+          <h3 className='mt-1 text-lg font-semibold text-gray-900 line-clamp-2'>
+            {property.name}
+          </h3>
+          {price && (
+            <p className='mt-2 text-lg font-bold text-brand-dark'>{price}</p>
           )}
-
-          {property.rates.monthly && (
-            <p>
-              <FaMoneyBill className='inline mr-2'></FaMoneyBill> Monthly
-            </p>
-          )}
-          {property.rates.nightly && (
-            <p>
-              <FaMoneyBill className='inline mr-2'></FaMoneyBill> Nightly
+          {meta && <p className='mt-1 text-sm text-gray-600'>{meta}</p>}
+          {periods && (
+            <p className='mt-3 text-xs uppercase tracking-wide text-gray-500'>
+              {periods}
             </p>
           )}
         </div>
-
-        <div className='border border-gray-100 mb-5'></div>
-
-        <div className='flex flex-col lg:flex-row justify-between mb-4'>
-          <div className='flex align-middle gap-2 mb-4 lg:mb-0'>
-            <FaMapMarker className='text-orange-700 mt-1'></FaMapMarker>
-            <span className='text-orange-700'>
-              {' '}
-              {property.location.city} {property.location.state}
-            </span>
-          </div>
-          <Link
-            href={`/properties/${property._id}`}
-            className='h-[36px] bg-brand text-white hover:brightness-110 px-4 py-2 rounded-lg text-center text-sm'
-          >
-            Details
-          </Link>
-        </div>
+      </Link>
+      <div className='absolute right-3 top-3'>
+        <BookmarkButton property={property} variant='icon' />
       </div>
-    </div>
+    </article>
   );
 };
 
